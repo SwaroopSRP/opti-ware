@@ -1,0 +1,29 @@
+package utils;
+import java.io.*;
+import java.util.*;
+
+public class CSVHandler {
+    public static List<String> read(String filePath) {
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            System.out.println("Error occurred while reading file: " + e.getMessage());
+        }
+        return lines;
+    }
+
+    public static void write(String filePath, List<String> lines) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+            for (String line : lines) {
+                bw.write(line);
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error occurred while writing to file: " + e.getMessage());
+        }
+    }
+}
