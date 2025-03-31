@@ -15,7 +15,10 @@ public class InventoryManager {
     private ArrayList<Product> loadInventory() {
         ArrayList<Product> products = new ArrayList<>();
         for (String line : CSVHandler.read(filePath)) {
-            products.add(Product.fromCSV(line));
+            Product product = Product.fromCSV(line);
+            if (product != null) {
+                products.add(product);
+            }
         }
         return products;
     }
@@ -39,6 +42,23 @@ public class InventoryManager {
     public void deleteProduct(String productId) {
         inventory.removeIf(p -> p.getId().equals(productId));
         saveInventory();
+    }
+
+    public void sellProduct(String productId, int quantitySold) {
+        for (Product p : inventory) {
+            if (p.getId().equals(productId)) {
+                if (p.getQuantity() >= quantitySold) {
+                    p.setQuantity(p.getQuantity() - quantitySold);
+                    p.addSale(quantitySold);  // Track sales
+                    saveInventory();
+                    System.out.println("Sale recorded: " + quantitySold + " units of " + p.getName());
+                } else {
+                    System.out.println("Not enough stock available!");
+                }
+                return;
+            }
+        }
+        System.out.println("Product not found!");
     }
 
     public ArrayList<Product> getInventory() { return inventory; }

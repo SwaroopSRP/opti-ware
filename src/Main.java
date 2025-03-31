@@ -1,7 +1,7 @@
 import utils.Product;
 import services.InventoryManager;
 import services.Notifier;
-//import services.InsightsGenerator;
+import services.InsightsGenerator;
 import java.util.Scanner;
 
 public class Main {
@@ -15,9 +15,10 @@ public class Main {
             System.out.println("2. View Inventory");
             System.out.println("3. Update Quantity");
             System.out.println("4. Delete Product");
-            System.out.println("5. Check Quantity Levels");
-            System.out.println("6. Generate Insights");
-            System.out.println("7. Exit");
+            System.out.println("5. Sell Product");
+            System.out.println("6. Check Quantity Levels");
+            System.out.println("7. Generate Insights");
+            System.out.println("8. Exit");
             System.out.print("Choose an option: ");
 
             int choice = scanner.nextInt();
@@ -39,7 +40,7 @@ public class Main {
                     break;
                 case 2:
                     for (Product p : manager.getInventory()) {
-                        System.out.println(p.getId() + " | " + p.getName() + " | " + p.getCategory() + " | " + p.getPrice() + " | " + p.getQuantity());
+                        System.out.println(p.getId() + " | " + p.getName() + " | " + p.getCategory() + " | " + p.getPrice() + " | " + p.getQuantity()+ " | Sold: " + p.getUnitsSold());
                     }
                     break;
                 case 3:
@@ -54,12 +55,20 @@ public class Main {
                     manager.deleteProduct(scanner.next());
                     break;
                 case 5:
-                    Notifier.checkQuantityLevels(manager.getInventory());
+                    System.out.print("Enter Product ID: ");
+                    String saleId = scanner.next();
+                    System.out.print("Enter Quantity Sold: ");
+                    int quantitySold = scanner.nextInt();
+                    manager.sellProduct(saleId, quantitySold);
                     break;
                 case 6:
-//                    InsightsGenerator.generateInsights(manager.getInventory());
+                    System.out.println("Checking quantity levels...");
+                    Notifier.checkQuantityLevels(manager.getInventory());
                     break;
                 case 7:
+                    InsightsGenerator.generateInsights(manager.getInventory());
+                    break;
+                case 8:
                     System.exit(0);
             }
         }

@@ -8,7 +8,9 @@ public class CSVHandler {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
-                lines.add(line);
+                if (!line.trim().isEmpty()) {
+                    lines.add(line);
+                }
             }
         } catch (IOException e) {
             System.out.println("Error occurred while reading file: " + e.getMessage());
@@ -19,8 +21,10 @@ public class CSVHandler {
     public static void write(String filePath, List<String> lines) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
             for (String line : lines) {
-                bw.write(line);
-                bw.newLine();
+                if (!line.trim().isEmpty()) {
+                    bw.write(line);
+                    bw.newLine();
+                }
             }
         } catch (IOException e) {
             System.out.println("Error occurred while writing to file: " + e.getMessage());
