@@ -2,14 +2,18 @@ package services;
 import utils.Product;
 import utils.CSVHandler;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class InventoryManager {
     private ArrayList<Product> inventory;
     private String filePath;
+    private String salesFile = "assets/sales.csv";
 
     public InventoryManager(String filePath) {
         this.filePath = filePath;
         this.inventory = loadInventory();
+
     }
 
     private ArrayList<Product> loadInventory() {
@@ -31,8 +35,13 @@ public class InventoryManager {
     public void updateQuantity(String productId, int newQuantity) {
         for (Product p : inventory) {
             if (p.getId().equals(productId)) {
+                int sold = p.getQuantity() - newQuantity;
                 p.setQuantity(newQuantity);
                 saveInventory();
+
+                if (sold > 0) {  // Only log sales when reducing quantity
+                    logSale(p, sold);
+                }
                 return;
             }
         }
@@ -51,6 +60,7 @@ public class InventoryManager {
                     p.setQuantity(p.getQuantity() - quantitySold);
                     p.addSale(quantitySold);  // Track sales
                     saveInventory();
+                    logSale(p, quantitySold);
                     System.out.println("Sale recorded: " + quantitySold + " units of " + p.getName());
                 } else {
                     System.out.println("Not enough stock available!");
@@ -66,6 +76,17 @@ public class InventoryManager {
     private void saveInventory() {
         ArrayList<String> lines = new ArrayList<>();
         for (Product p : inventory) lines.add(p.toCSV());
-        CSVHandler.write(filePath, lines);
+        CSVHandler.write(filePath, lines, false);
+    }
+
+    private void logSale(Product p, int quantitySold) {
+        System.out.println("Logging sale for: " + p.getName() + " | Sold: " + quantitySold);
+
+        String saleEntry = p.getId() + "," + p.getName() + "," + quantitySold;
+
+        List<String> salesData = CSVHandler.read(salesFile);
+        salesData.add(saleEntry);
+        CSVHandler.write(salesFile, salesData, false);
+        System.out.println("Sale logged successfully!");
     }
 }

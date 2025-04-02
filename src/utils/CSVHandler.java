@@ -18,8 +18,8 @@ public class CSVHandler {
         return lines;
     }
 
-    public static void write(String filePath, List<String> lines) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+    public static void write(String filePath, List<String> lines, boolean append) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath, append))) {
             for (String line : lines) {
                 if (!line.trim().isEmpty()) {
                     bw.write(line);

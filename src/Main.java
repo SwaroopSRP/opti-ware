@@ -1,3 +1,4 @@
+import services.SalesAnalyzer;
 import utils.Product;
 import services.InventoryManager;
 import services.Notifier;
@@ -64,6 +65,8 @@ public class Main {
                 case 6:
                     System.out.println("Checking quantity levels...");
                     Notifier.checkQuantityLevels(manager.getInventory());
+                    SalesAnalyzer.generateInsights();
+
                     break;
                 case 7:
                     InsightsGenerator.generateInsights(manager.getInventory());
